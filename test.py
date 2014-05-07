@@ -51,6 +51,13 @@ value < 0
 sys.settrace(None)
 print
 
+comp = value.__lt__
+
+print "comp:", comp
+print "comp(0):", comp(0)
+print "int.__lt__:", int.__lt__
+print "repr(value < 0):", repr(value < 0)
+
 
 # print "############################################################"
 # print inspect.getsource(mock)
@@ -60,4 +67,4 @@ class Foo(object):
     def __lt__(self, other):
         return NotImplemented
 
-print Foo() < 1
+print "Foo() < 0:", Foo() < 0
