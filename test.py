@@ -18,7 +18,11 @@ def traceit(frame, event, arg):
         f_locals = frame.f_locals
         line = linecache.getline(filename, lineno)
         left = ("%s:%s: %s" % (name, lineno, line.rstrip())).ljust(80)
-        right = "%s, name: %s" % (f_locals.keys(), repr(f_locals.get('name')))
+        keys_to_display = ['name', 'ret_val']
+        key_display = ', '.join(
+            "%s: %s" % (key, repr(f_locals.get(key)))
+            for key in keys_to_display)
+        right = "%s| %s" % (f_locals.keys(), key_display)
         print "%s %s" % (left, right)
 
         # print "%s:%s: %s (%s)" % (name, lineno, line.rstrip(), f_locals)
@@ -42,7 +46,7 @@ print value == 0
 print value > 0
 
 print
-sys.settrace(traceit)
+# sys.settrace(traceit)
 value < 0
 sys.settrace(None)
 print
@@ -51,3 +55,9 @@ print
 # print "############################################################"
 # print inspect.getsource(mock)
 # print "############################################################"
+
+class Foo(object):
+    def __lt__(self, other):
+        return NotImplemented
+
+print Foo() < 1
