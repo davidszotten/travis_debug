@@ -2,14 +2,10 @@ from mock import MagicMock
 
 m1 = MagicMock()
 
-def print_and_return(*args, **kwargs):
-    print args, kwargs
-    return NotImplemented
-
-m1.__lt__.side_effect = print_and_return
-m1.__gt__.side_effect = print_and_return
-
-
 print m1 < 0
 
-print object.__getattribute__(m1, '__lt__')(0)
+print type(m1) < type(0)
+
+print type(m1) is MagicMock
+print isinstance(m1, MagicMock)
+print MagicMock < int
