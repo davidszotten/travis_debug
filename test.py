@@ -1,70 +1,29 @@
-# import inspect
-import linecache
-import sys
+from mock import Mock, MagicMock
 
-import mock
+m1 = Mock()
 
+m4 = MagicMock()
+m5 = MagicMock()
+m5.__lt__.return_value = NotImplemented
+m6 = MagicMock()
+m6.__lt__.side_effect = lambda x: NotImplemented
 
-def traceit(frame, event, arg):
-    if event == "line":
-        lineno = frame.f_lineno
-        filename = frame.f_globals["__file__"]
-        if filename == "<stdin>":
-            filename = "traceit.py"
-        if (filename.endswith(".pyc") or
-            filename.endswith(".pyo")):
-            filename = filename[:-1]
-        name = frame.f_globals["__name__"]
-        f_locals = frame.f_locals
-        line = linecache.getline(filename, lineno)
-        left = ("%s:%s: %s" % (name, lineno, line.rstrip())).ljust(80)
-        keys_to_display = ['name', 'ret_val']
-        key_display = ', '.join(
-            "%s: %s" % (key, repr(f_locals.get(key)))
-            for key in keys_to_display)
-        right = "%s| %s" % (f_locals.keys(), key_display)
-        print "%s %s" % (left, right)
-
-        # print "%s:%s: %s (%s)" % (name, lineno, line.rstrip(), f_locals)
-    return traceit
-
-
-def display(value):
-    print value
-    print repr(value)
-    print
-
-dict_map = mock.MagicMock()
-display(dict_map)
-
-value = dict_map.get('value')
-display(value)
-
-
-print value < 0
-print value == 0
-print value > 0
-
-print
-# sys.settrace(traceit)
-value < 0
-sys.settrace(None)
-print
-
-comp = value.__lt__
-
-print "comp:", comp
-print "comp(0):", comp(0)
-print "int.__lt__:", int.__lt__
-print "repr(value < 0):", repr(value < 0)
-
-
-# print "############################################################"
-# print inspect.getsource(mock)
-# print "############################################################"
 
 class Foo(object):
     def __lt__(self, other):
         return NotImplemented
 
-print "Foo() < 0:", Foo() < 0
+
+foo = Foo()
+
+m7 = Mock(wraps=foo)
+m8 = MagicMock(wraps=foo)
+
+print 1, m1 < 0
+print 4, m4 < 0
+print 5, m5 < 0
+print 6, m6 < 0
+print 7, m7 < 0
+print 8, m8 < 0
+
+print 'f', foo < 0
